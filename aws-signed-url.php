@@ -1,11 +1,12 @@
-<?hh
-
+<?php
+defined( 'ABSPATH' ) OR exit;
 /*
 Plugin Name: AWS Signed URLs
 Description: Generates signed urls for Cloudfront assets
 Version: 1.0.0
-Author: Ocasta Studios
+Author: Richard Bown
 
+Copyright 2021 Tulipesque 
 Copyright 2016 Ocasta Studios Ltd
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,22 +22,41 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 register_activation_hook(   __FILE__, array( 'AWSSignedURL', 'aws_signed_url_activation' ) );
 register_deactivation_hook(   __FILE__, array( 'AWSSignedURL', 'aws_signed_url_deactivation' ) );
+register_uninstall_hook(    __FILE__, array( 'AWSSignedURL', 'aws_signed_url_uninstall' ) );
+
+add_action( 'plugins_loaded', array( 'AWSSignedURL', 'init' ) );
+
+add_shortcode('wp-sign', array ('AWSSignedURL', 'get_signed_URL_from_shortcode' ) );
 
 class AWSSignedURL
 {
 
-  public function __construct() : void {
+  protected static $instance;
+
+  public static function init()
+  {
+      is_null( self::$instance ) AND self::$instance = new self;
+      return self::$instance;
+  }
+
+  public function __construct()
+  {
     require_once(plugin_dir_path(__FILE__) . '/aws-signed-url-options.php');
     new AWSSignedURL_Options();
 
     add_filter('wp_get_attachment_url', array($this,'get_signed_URL'),100);
   }
 
+  function get_signed_URL_from_shortcode($atts = array(), $content = null) 
+  {
+    return self::get_signed_URL($content);
+  }
+
   // Create a Signed URL for media assets stored on S3 and served up via CloudFront
-  function get_signed_URL($resource) {
+  function get_signed_URL($resource) 
+  {
     $options = get_option('aws_signed_url_settings');
 
     $expires = time() + $options['aws_signed_url_lifetime']; //Time out in seconds
@@ -67,14 +87,41 @@ class AWSSignedURL
     return $url;
   }
 
-  public static function aws_signed_url_activation() : void {
+  public static function aws_signed_url_activation() 
+  {
+    if ( ! current_user_can( 'activate_plugins' ) )
+        return;
+    $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+    check_admin_referer( "activate-plugin_{$plugin}" );
 
+    # Uncomment the following line to see the function in action
+    # exit( var_dump( $_GET ) );
   }
 
-  public static function aws_signed_url_deactivation() : void {
+  public static function aws_signed_url_deactivation() {
+    if ( ! current_user_can( 'activate_plugins' ) )
+        return;
+    $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
+    check_admin_referer( "deactivate-plugin_{$plugin}" );
 
+    # Uncomment the following line to see the function in action
+    # exit( var_dump( $_GET ) );
+  }
+
+  public static function aws_signed_url_uninstall() {
+    if ( ! current_user_can( 'activate_plugins' ) )
+        return;
+    check_admin_referer( 'bulk-plugins' );
+
+    // Important: Check if the file is the one
+    // that was registered during the uninstall hook.
+    if ( __FILE__ != WP_UNINSTALL_PLUGIN )
+        return;
+
+    # Uncomment the following line to see the function in action
+    # exit( var_dump( $_GET ) );
   }
 
 }
 
-new AWSSignedURL();
+#new AWSSignedURL();
