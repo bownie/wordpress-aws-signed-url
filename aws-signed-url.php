@@ -59,7 +59,7 @@ class AWSSignedURL
   {
     $options = get_option('aws_signed_url_settings');
 
-    $expires = time() + $options['aws_signed_url_lifetime']; //Time out in seconds
+    $expires = time() + $options['aws_signed_url_lifetime'] * 60; // Convert timeout to seconds
     $json = '{"Statement":[{"Resource":"'.$resource.'","Condition":{"DateLessThan":{"AWS:EpochTime":'.$expires.'}}}]}';
 
     //Read the private key
