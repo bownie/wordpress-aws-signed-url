@@ -3,7 +3,7 @@ defined( 'ABSPATH' ) OR exit;
 /*
 Plugin Name: AWS Signed URLs
 Description: Generates signed urls for Cloudfront assets
-Version: 1.0.0
+Version: 1.0.1
 Author: Richard Bown
 
 Copyright 2021 Tulipesque 
@@ -94,8 +94,8 @@ class AWSSignedURL
     $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
     check_admin_referer( "activate-plugin_{$plugin}" );
 
-    # Uncomment the following line to see the function in action
-    # exit( var_dump( $_GET ) );
+    // Uncomment the following line to see the function in action
+    // exit( var_dump( $_GET ) );
   }
 
   public static function aws_signed_url_deactivation() {
@@ -104,8 +104,8 @@ class AWSSignedURL
     $plugin = isset( $_REQUEST['plugin'] ) ? $_REQUEST['plugin'] : '';
     check_admin_referer( "deactivate-plugin_{$plugin}" );
 
-    # Uncomment the following line to see the function in action
-    # exit( var_dump( $_GET ) );
+    // Uncomment the following line to see the function in action
+    // exit( var_dump( $_GET ) );
   }
 
   public static function aws_signed_url_uninstall() {
@@ -118,10 +118,8 @@ class AWSSignedURL
     if ( __FILE__ != WP_UNINSTALL_PLUGIN )
         return;
 
-    # Uncomment the following line to see the function in action
-    # exit( var_dump( $_GET ) );
+    // Uncomment the following line to see the function in action
+    // exit( var_dump( $_GET ) );
   }
 
 }
-
-#new AWSSignedURL();
