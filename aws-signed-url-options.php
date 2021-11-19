@@ -16,20 +16,20 @@ class AWSSignedURL_Options
 
   function aws_signed_url_settings_init() : void {
 
-    register_setting('pluginPage', 'aws_signed_url_settings', array($this, 'validate_input'));
+    register_setting('aws_signed_url_pluginPage', 'aws_signed_url_settings', array($this, 'validate_input'));
 
     add_settings_section(
       'aws_signed_url_pluginPage_section',
       __('CloudFront Key Pair Details', 'wordpress'),
       array($this,'aws_signed_url_settings_section_callback'),
-      'pluginPage'
+      'aws_signed_url_pluginPage'
     );
 
     add_settings_field(
       'aws_signed_url_key_pair_id',
       __('CloudFront Key Pair ID', 'wordpress'),
       array($this, 'aws_signed_url_key_pair_id_render'),
-      'pluginPage',
+      'aws_signed_url_pluginPage',
       'aws_signed_url_pluginPage_section'
     );
 
@@ -37,7 +37,7 @@ class AWSSignedURL_Options
       'aws_signed_url_pem',
       __('Private Key PEM', 'wordpress'),
       array($this, 'aws_signed_url_pem_render'),
-      'pluginPage',
+      'aws_signed_url_pluginPage',
       'aws_signed_url_pluginPage_section'
     );
 
@@ -45,7 +45,7 @@ class AWSSignedURL_Options
       'aws_signed_url_lifetime',
       __('URL Lifetime', 'wordpress'),
       array($this, 'aws_signed_url_lifetime_render'),
-      'pluginPage',
+      'aws_signed_url_pluginPage',
       'aws_signed_url_pluginPage_section'
     );
 
@@ -60,7 +60,7 @@ class AWSSignedURL_Options
 
   function aws_signed_url_pem_render() : void {
     $options = get_option('aws_signed_url_settings');
-    echo "<textarea cols='65' rows='28' style='font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospaced;' name='aws_signed_url_settings[aws_signed_url_pem]'> {$options['aws_signed_url_pem']}</textarea>";
+    echo "<textarea cols='65' rows='28' style='font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospaced;' name='aws_signed_url_settings[aws_signed_url_pem]'>{$options['aws_signed_url_pem']}</textarea>";
   }
 
 
@@ -85,8 +85,8 @@ class AWSSignedURL_Options
     <a href=http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/PrivateContent.html>Serving Private Content through CloudFront</a>
     </p><p>To help secure your applications, AWS recommends that you change CloudFront key pairs every 90 days or more often.</p>
 START;
-    settings_fields('pluginPage');
-    do_settings_sections('pluginPage');
+    settings_fields('aws_signed_url_pluginPage');
+    do_settings_sections('aws_signed_url_pluginPage');
     submit_button();
 
 
